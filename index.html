@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bewertungsscheibe – BSAG Elektrifizierung</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; padding: 16px; }
+.wrap { max-width: 860px; margin: 0 auto; }
+
+.header { background: #1a1a2e; color: white; border-radius: 12px; padding: 22px 24px; margin-bottom: 16px; }
+.header .tag { font-size: 11px; color: #9090b0; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+.header h1 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.header p { font-size: 13px; color: #bbb; line-height: 1.5; }
+
+.card { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 20px; margin-bottom: 16px; }
+.card-title { font-size: 16px; font-weight: 700; color: #1a1a2e; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; margin-bottom: 14px; }
+.card-sub { font-size: 12px; color: #888; font-weight: 400; margin-left: 8px; }
+
+.aufgabenbox { background: #f0f4ff; border-left: 4px solid #1a1a2e; border-radius: 8px; padding: 13px 15px; margin-bottom: 16px; font-size: 13px; color: #222; line-height: 1.6; }
+.aufgabenbox strong { display: block; margin-bottom: 4px; font-size: 14px; }
+
+/* Intro Scheibe */
+.intro-layout { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.intro-text { flex: 1; min-width: 200px; }
+.intro-text p { font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 8px; }
+.steps { list-style: none; }
+.steps li { font-size: 13px; color: #333; padding: 6px 0; display: flex; align-items: flex-start; gap: 8px; }
+.steps li .num { width: 22px; height: 22px; border-radius: 50%; background: #1a1a2e; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+/* Dimension tabs */
+.dtabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.dtab { flex: 1; padding: 10px 6px; border-radius: 8px; border: 2px solid #ddd; background: white; cursor: pointer; font-size: 13px; font-weight: 500; color: #555; text-align: center; }
+.dtab.ao { border-color: #2d7d46; background: #f0faf3; color: #2d7d46; font-weight: 700; }
+.dtab.ae { border-color: #1565c0; background: #eef4fd; color: #1565c0; font-weight: 700; }
+.dtab.as { border-color: #6a1b9a; background: #f8f0fd; color: #6a1b9a; font-weight: 700; }
+.dcnt { font-size: 10px; color: #888; margin-top: 3px; }
+
+.crit { border: 1px solid #e5e5e5; border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+.crit-hd { padding: 10px 15px; font-weight: 600; font-size: 13px; color: #222; background: #fafafa; border-bottom: 1px solid #eee; }
+.crit-bd { padding: 13px 15px; }
+.step { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
+.badge { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
+.bo { background: #2d7d46; } .be { background: #1565c0; } .bs { background: #6a1b9a; }
+textarea.sach { width: 100%; padding: 9px 11px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; font-family: inherit; line-height: 1.5; resize: vertical; min-height: 60px; outline: none; margin-bottom: 4px; }
+textarea.sach:focus { border-color: #555; }
+.hint { font-size: 11px; color: #999; margin-bottom: 12px; font-style: italic; }
+.btnpair { display: flex; gap: 8px; }
+.bc { flex: 1; padding: 9px 6px; border-radius: 8px; border: 2px solid #ddd; background: white; cursor: pointer; font-size: 13px; font-weight: 500; color: #555; }
+.bc.sv { border-color: #2d7d46; background: #e8f5e9; color: #2d7d46; font-weight: 700; }
+.bc.sn { border-color: #c62828; background: #ffebee; color: #c62828; font-weight: 700; }
+
+/* Phase 2 */
+.wlegend { background: #f0f4ff; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 12px; color: #333; line-height: 1.8; border-left: 3px solid #1a1a2e; }
+.wlegend strong { display: block; margin-bottom: 6px; font-size: 13px; }
+.wleg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+.wbadge { padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; color: white; white-space: nowrap; }
+.wbadge.w4 { background: #1b5e20; }
+.wbadge.w3 { background: #4caf50; }
+.wbadge.w2 { background: #8bc34a; color: #333; }
+.wbadge.w1 { background: #bdbdbd; color: #333; }
+
+.dimgroup { margin-bottom: 20px; }
+.dimgrouptitle { font-size: 13px; font-weight: 700; margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; }
+.dgt-o { background: #f0faf3; color: #2d7d46; }
+.dgt-e { background: #eef4fd; color: #1565c0; }
+.dgt-s { background: #f8f0fd; color: #6a1b9a; }
+.wblock { border: 1px solid #e5e5e5; border-radius: 10px; margin-bottom: 9px; padding: 13px 15px; }
+.wblock.w-4 { border-color: #1b5e20; background: #f1f8f1; }
+.wblock.w-3 { border-color: #4caf50; background: #f9fdf9; }
+.wblock.w-2 { border-color: #8bc34a; background: #fbfdf5; }
+.wblock.w-1 { border-color: #bdbdbd; background: #fafafa; }
+.wtitle { font-weight: 600; font-size: 13px; color: #222; margin-bottom: 5px; }
+.wsach { font-size: 12px; color: #555; padding: 6px 10px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #ddd; background: #f9f9f9; font-style: italic; }
+.wsach.sv2 { border-left-color: #2d7d46; }
+.wsach.sn2 { border-left-color: #c62828; }
+.wbtns { display: flex; gap: 5px; flex-wrap: wrap; }
+.wbtn { flex: 1; min-width: 80px; padding: 8px 4px; border-radius: 8px; border: 2px solid #ddd; background: white; cursor: pointer; font-size: 11.5px; font-weight: 500; color: #555; text-align: center; }
+.wbtn.sel4 { border-color: #1b5e20; background: #e8f5e9; color: #1b5e20; font-weight: 700; }
+.wbtn.sel3 { border-color: #4caf50; background: #f1f8e9; color: #388e3c; font-weight: 700; }
+.wbtn.sel2 { border-color: #8bc34a; background: #f9fbe7; color: #558b2f; font-weight: 700; }
+.wbtn.sel1 { border-color: #bdbdbd; background: #fafafa; color: #666; font-weight: 700; }
+
+/* Dynamische Scheibe */
+.scheibe-dyn { background: #f8f9fa; border-radius: 12px; padding: 20px; margin-bottom: 18px; border: 1px solid #e0e0e0; text-align: center; }
+.scheibe-dyn h3 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+.scheibe-dyn p { font-size: 12px; color: #666; margin-bottom: 16px; }
+.scheibe-dyn-layout { display: flex; justify-content: center; align-items: center; gap: 28px; flex-wrap: wrap; }
+.score-list { text-align: left; }
+.score-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.score-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+.score-info { font-size: 13px; font-weight: 600; min-width: 90px; }
+.score-bar-wrap { width: 100px; background: #e0e0e0; border-radius: 4px; height: 10px; }
+.score-bar { height: 100%; border-radius: 4px; transition: width 0.4s; }
+.score-pts { font-size: 12px; color: #666; min-width: 40px; }
+
+/* Werturteil */
+.wubox { background: #1a1a2e; border-radius: 12px; padding: 22px; color: white; }
+.wubox h2 { font-size: 16px; margin-bottom: 6px; font-weight: 700; }
+.wubox .sub { font-size: 12px; color: #aaa; margin-bottom: 14px; }
+.aufgabe-wu { background: #252550; border-radius: 8px; padding: 14px; border-left: 4px solid #3a7bd5; margin-bottom: 14px; font-size: 13px; color: #dde; line-height: 1.6; }
+.hinweise { background: #1e2a40; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+.hinweise strong { color: #ccc; display: block; margin-bottom: 6px; font-size: 12px; }
+.hinweise ul { list-style: none; }
+.hinweise ul li { font-size: 12px; color: #aaa; line-height: 1.7; padding-left: 14px; position: relative; }
+.hinweise ul li::before { content: "–"; position: absolute; left: 0; }
+textarea.wu { width: 100%; min-height: 150px; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1e1e3a; color: white; font-size: 13px; font-family: inherit; line-height: 1.6; resize: vertical; outline: none; }
+textarea.wu::placeholder { color: #555; }
+.wufoot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 8px; }
+.wucnt { font-size: 12px; color: #888; }
+.btnsave { padding: 10px 22px; border-radius: 8px; border: none; background: #3a7bd5; color: white; cursor: pointer; font-weight: 600; font-size: 13px; }
+.btnsave:disabled { background: #444; color: #777; cursor: default; }
+.savedbox { margin-top: 13px; background: #1e3a2e; border-radius: 8px; padding: 14px; border: 1px solid #2d5a40; }
+.savedbox h4 { font-size: 13px; color: #81c784; margin-bottom: 7px; }
+.savedtxt { font-size: 13px; color: #ccc; line-height: 1.6; white-space: pre-wrap; }
+
+.navrow { display: flex; justify-content: flex-end; margin-top: 18px; gap: 10px; }
+.btnav { padding: 11px 24px; border-radius: 9px; border: none; background: #1a1a2e; color: white; cursor: pointer; font-size: 13px; font-weight: 600; }
+.btnav.sec { background: white; color: #333; border: 1px solid #ddd; }
+.btnpdf { padding: 11px 20px; border-radius: 9px; border: 2px solid #3a7bd5; background: white; color: #3a7bd5; cursor: pointer; font-size: 13px; font-weight: 600; }
+
+@media print {
+  body { background: white; padding: 8px; font-size: 11px; }
+  .header { background: #1a1a2e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #phase1, #phase2 { display: block !important; }
+  #dim-oeko, #dim-oekono, #dim-sozial { display: block !important; }
+  .dtabs { display: none !important; }
+  .progress, .navrow, .btnsave, .btnpdf, #wu-save, .scheibe-intro, .intro-layout { display: none !important; }
+  .scheibe-dyn { break-inside: avoid; }
+  .wubox { background: #1a1a2e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; break-inside: avoid; }
+  .card { break-inside: avoid; margin-bottom: 10px; }
+  .crit { break-inside: avoid; }
+  textarea { border: 1px solid #ccc !important; background: white !important; color: black !important; min-height: 40px !important; }
+  .wubox textarea { background: #1e1e3a !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .wubox .sub, .wubox h2 { color: white !important; }
+  .aufgabe-wu { background: #252550 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .hinweise { display: none !important; }
+  .bo { background: #2d7d46 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .be { background: #1565c0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .bs { background: #6a1b9a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+.progress { display: flex; gap: 8px; margin-bottom: 18px; align-items: center; }
+.pstep { flex: 1; height: 5px; border-radius: 2px; background: #e0e0e0; }
+.pstep.done { background: #1a1a2e; }
+.pstep.active { background: #3a7bd5; }
+.plabel { font-size: 11px; color: #888; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <div class="tag">Chemie · E-Phase · CvO Bremerhaven · Übungsstunde</div>
+  <h1>Bewertungsscheibe – Akku vs. fossile Energieträger</h1>
+  <p>Vergleichen Sie den Lithium-Ionen-Akkumulator und fossile Energieträger als Energiespeicher anhand des Nachhaltigkeitsdreiecks.</p>
+</div>
+
+<!-- Intro -->
+<div class="card">
+  <div class="card-title">So funktioniert die Bewertungsscheibe</div>
+  <div class="intro-layout">
+    <canvas id="introCanvas" width="160" height="160" style="flex-shrink:0"></canvas>
+    <div class="intro-text">
+      <ul class="steps">
+        <li><div class="num">1</div><div><strong>Phase 1 – Sachebene:</strong> Formulieren Sie zu jeder der drei Dimensionen (ökologisch, ökonomisch, sozial) drei Sachargumente und ordnen Sie diese als Vorteil oder Nachteil ein.</div></li>
+        <li><div class="num">2</div><div><strong>Phase 2 – Gewichtung:</strong> Entscheiden Sie, wie wichtig jedes Argument für Ihr persönliches Werturteil ist. Die Scheibe zeigt Ihnen danach, welche Dimension Sie am stärksten gewichtet haben.</div></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="progress">
+  <div class="pstep active" id="ps1"></div>
+  <div class="pstep" id="ps2"></div>
+  <span class="plabel" id="plabel">Phase 1 von 2</span>
+</div>
+
+<!-- PHASE 1 -->
+<div id="phase1">
+  <div class="card">
+    <div class="card-title">Phase 1 <span class="card-sub">Sachargumente &amp; Einordnung</span></div>
+    <div class="aufgabenbox">
+      <strong>Aufgabe:</strong>
+      Formulieren Sie für jeden der neun Aspekte ein Sachargument aus Ihrem Vorwissen. Ordnen Sie anschließend ein: Ist das ein Vorteil oder ein Nachteil des Lithium-Ionen-Akkumulators im Vergleich zu fossilen Energieträgern?
+    </div>
+
+    <div class="dtabs">
+      <div class="dtab ao" onclick="showDim('oeko')" id="dt-oeko">🌿 Ökologisch<div class="dcnt" id="dc-oeko">0/3</div></div>
+      <div class="dtab" onclick="showDim('oekono')" id="dt-oekono">💶 Ökonomisch<div class="dcnt" id="dc-oekono">0/3</div></div>
+      <div class="dtab" onclick="showDim('sozial')" id="dt-sozial">👥 Sozial<div class="dcnt" id="dc-sozial">0/3</div></div>
+    </div>
+
+    <div id="dim-oeko">
+      <div class="crit"><div class="crit-hd">1. CO₂-Emissionen im Betrieb</div><div class="crit-bd">
+        <div class="step"><span class="badge bo">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-oeko-co2" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('oeko')"></textarea>
+        <div class="hint">Vergleichen Sie die CO₂-Emissionen beim Betrieb eines Elektro- und eines Verbrennungsmotors. Beachten Sie auch den Strommix.</div>
+        <div class="step"><span class="badge bo">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-oeko-co2-v" onclick="selVN('oeko','co2','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-oeko-co2-n" onclick="selVN('oeko','co2','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+      <div class="crit"><div class="crit-hd">2. Rohstoffabbau (Lithium, Kobalt)</div><div class="crit-bd">
+        <div class="step"><span class="badge bo">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-oeko-li" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('oeko')"></textarea>
+        <div class="hint">Überlegen Sie, welche Rohstoffe für den Akku benötigt werden und wie deren Abbau die Umwelt belastet.</div>
+        <div class="step"><span class="badge bo">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-oeko-li-v" onclick="selVN('oeko','li','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-oeko-li-n" onclick="selVN('oeko','li','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+      <div class="crit"><div class="crit-hd">3. Recycling und Entsorgung der Akkumulatoren</div><div class="crit-bd">
+        <div class="step"><span class="badge bo">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-oeko-rec" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('oeko')"></textarea>
+        <div class="hint">Vergleichen Sie, wie Akkus und fossile Energieträger entsorgt oder recycelt werden – und welche Probleme dabei entstehen.</div>
+        <div class="step"><span class="badge bo">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-oeko-rec-v" onclick="selVN('oeko','rec','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-oeko-rec-n" onclick="selVN('oeko','rec','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+    </div>
+
+    <div id="dim-oekono" style="display:none">
+      <div class="crit"><div class="crit-hd">1. Anschaffungs- und Betriebskosten</div><div class="crit-bd">
+        <div class="step"><span class="badge be">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-oekono-kost" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('oekono')"></textarea>
+        <div class="hint">Vergleichen Sie die Anschaffungskosten und die laufenden Betriebskosten von Akkus und fossilen Energieträgern.</div>
+        <div class="step"><span class="badge be">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-oekono-kost-v" onclick="selVN('oekono','kost','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-oekono-kost-n" onclick="selVN('oekono','kost','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+      <div class="crit"><div class="crit-hd">2. Ladeinfrastruktur</div><div class="crit-bd">
+        <div class="step"><span class="badge be">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-oekono-inf" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('oekono')"></textarea>
+        <div class="hint">Überlegen Sie, was für den Betrieb von Akkufahrzeugen an Infrastruktur nötig ist – und was das kostet.</div>
+        <div class="step"><span class="badge be">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-oekono-inf-v" onclick="selVN('oekono','inf','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-oekono-inf-n" onclick="selVN('oekono','inf','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+      <div class="crit"><div class="crit-hd">3. Langfristige Wirtschaftlichkeit</div><div class="crit-bd">
+        <div class="step"><span class="badge be">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-oekono-wirt" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('oekono')"></textarea>
+        <div class="hint">Vergleichen Sie, wie sich die Preise für Strom und fossile Brennstoffe langfristig entwickeln und welche Option wirtschaftlich vorteilhafter ist.</div>
+        <div class="step"><span class="badge be">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-oekono-wirt-v" onclick="selVN('oekono','wirt','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-oekono-wirt-n" onclick="selVN('oekono','wirt','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+    </div>
+
+    <div id="dim-sozial" style="display:none">
+      <div class="crit"><div class="crit-hd">1. Gesundheitliche Auswirkungen</div><div class="crit-bd">
+        <div class="step"><span class="badge bs">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-sozial-luft" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('sozial')"></textarea>
+        <div class="hint">Vergleichen Sie die gesundheitlichen Auswirkungen von Abgasen fossiler Energieträger mit dem Betrieb von Akkufahrzeugen.</div>
+        <div class="step"><span class="badge bs">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-sozial-luft-v" onclick="selVN('sozial','luft','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-sozial-luft-n" onclick="selVN('sozial','luft','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+      <div class="crit"><div class="crit-hd">2. Arbeitsplätze in der Region</div><div class="crit-bd">
+        <div class="step"><span class="badge bs">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-sozial-arb" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('sozial')"></textarea>
+        <div class="hint">Überlegen Sie, welche Arbeitsplätze beim Übergang von fossilen Energieträgern zu Akkus wegfallen und welche neu entstehen.</div>
+        <div class="step"><span class="badge bs">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-sozial-arb-v" onclick="selVN('sozial','arb','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-sozial-arb-n" onclick="selVN('sozial','arb','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+      <div class="crit"><div class="crit-hd">3. Soziale Gerechtigkeit</div><div class="crit-bd">
+        <div class="step"><span class="badge bs">1</span> Sachargument formulieren</div>
+        <textarea class="sach" id="s-sozial-geo" placeholder="Formulieren Sie einen vollständigen Satz mit fachlichem Bezug." oninput="updateCount('sozial')"></textarea>
+        <div class="hint">Überlegen Sie, wer von der Nutzung fossiler Energieträger bzw. von Akkus profitiert – und wer die sozialen und ökologischen Kosten trägt (z. B. Abbauregionen, Krisenregionen).</div>
+        <div class="step"><span class="badge bs">2</span> Einordnung</div>
+        <div class="btnpair">
+          <button class="bc" id="vn-sozial-geo-v" onclick="selVN('sozial','geo','vorteil')">✓ Vorteil</button>
+          <button class="bc" id="vn-sozial-geo-n" onclick="selVN('sozial','geo','nachteil')">✗ Nachteil</button>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="navrow">
+      <button class="btnav" onclick="goPhase2()">Weiter zu Phase 2 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2 -->
+<div id="phase2" style="display:none">
+  <div class="card">
+    <div class="card-title">Phase 2 <span class="card-sub">Gewichtung &amp; Werturteil</span></div>
+    <div class="aufgabenbox">
+      <strong>Aufgabe:</strong>
+      Gewichten Sie Ihre neun Sachargumente nach ihrer persönlichen Bedeutung für Ihr Werturteil. Die Bewertungsscheibe zeigt Ihnen anschließend, welche Dimension Sie am stärksten gewichtet haben.
+    </div>
+
+    <div class="wlegend">
+      <strong>Gewichtungsstufen:</strong>
+      <div class="wleg-row"><span class="wbadge w4">sehr wichtig</span> entscheidend für mein Werturteil (4 Punkte)</div>
+      <div class="wleg-row"><span class="wbadge w3">wichtig</span> beeinflusst mein Urteil deutlich (3 Punkte)</div>
+      <div class="wleg-row"><span class="wbadge w2">weniger wichtig</span> spielt eine untergeordnete Rolle (2 Punkte)</div>
+      <div class="wleg-row"><span class="wbadge w1" style="color:#333">gar nicht wichtig</span> verändert mein Urteil nicht (1 Punkt)</div>
+    </div>
+
+    <div id="wgroups"></div>
+
+    <!-- Dynamische Scheibe -->
+    <div class="scheibe-dyn">
+      <h3>Ihre Bewertungsscheibe</h3>
+      <p>Die Scheibe zeigt, welche Dimension Sie am stärksten gewichtet haben. Je größer der Sektor, desto wichtiger ist Ihnen diese Dimension.</p>
+      <div class="scheibe-dyn-layout">
+        <canvas id="dynCanvas" width="200" height="200"></canvas>
+        <div class="score-list">
+          <div class="score-item">
+            <div class="score-dot" style="background:#2d7d46"></div>
+            <div class="score-info" style="color:#2d7d46">Ökologisch</div>
+            <div class="score-bar-wrap"><div class="score-bar" id="bar-o" style="width:0%;background:#2d7d46"></div></div>
+            <div class="score-pts" id="pts-o">0/12</div>
+          </div>
+          <div class="score-item">
+            <div class="score-dot" style="background:#1565c0"></div>
+            <div class="score-info" style="color:#1565c0">Ökonomisch</div>
+            <div class="score-bar-wrap"><div class="score-bar" id="bar-e" style="width:0%;background:#1565c0"></div></div>
+            <div class="score-pts" id="pts-e">0/12</div>
+          </div>
+          <div class="score-item">
+            <div class="score-dot" style="background:#6a1b9a"></div>
+            <div class="score-info" style="color:#6a1b9a">Sozial</div>
+            <div class="score-bar-wrap"><div class="score-bar" id="bar-s" style="width:0%;background:#6a1b9a"></div></div>
+            <div class="score-pts" id="pts-s">0/12</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Werturteil -->
+    <div class="wubox">
+      <h2>Mein Werturteil</h2>
+      <div class="sub">Formulieren Sie auf Grundlage Ihrer Sachargumente und Ihrer persönlichen Gewichtung ein begründetes Werturteil.</div>
+      <div class="aufgabe-wu">
+        Bewerten Sie: Ist der Lithium-Ionen-Akkumulator den fossilen Energieträgern als Energiespeicher vorzuziehen? Formulieren Sie auf Grundlage Ihrer Bewertungsscheibe ein begründetes Werturteil.
+      </div>
+      <textarea class="wu" id="wu-text" placeholder="Schreiben Sie hier Ihr Werturteil ..." oninput="updateWU()"></textarea>
+      <div class="wufoot">
+        <span class="wucnt" id="wu-cnt">0 Wörter</span>
+        <button class="btnsave" id="wu-save" onclick="saveWU()" disabled>Werturteil speichern</button>
+      </div>
+      <div class="savedbox" id="wu-saved" style="display:none">
+        <h4>✓ Gespeichertes Werturteil</h4>
+        <div class="savedtxt" id="wu-savedtxt"></div>
+      </div>
+    </div>
+
+    <div class="navrow">
+      <button class="btnpdf" onclick="window.print()">📄 Als PDF speichern</button>
+      <button class="btnav sec" onclick="goPhase1()">← Zurück zu Phase 1</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+var state = { vn: {}, sachs: {}, weights: {} };
+
+var DIMS = {
+  oeko:   { label: 'Ökologisch',  color: '#2d7d46', cls: 'o', items: [
+    { key: 'co2',  label: 'CO₂-Emissionen im Betrieb' },
+    { key: 'li',   label: 'Rohstoffabbau (Lithium, Kobalt)' },
+    { key: 'rec',  label: 'Recycling und Entsorgung der Akkumulatoren' }
+  ]},
+  oekono: { label: 'Ökonomisch', color: '#1565c0', cls: 'e', items: [
+    { key: 'kost', label: 'Anschaffungs- und Betriebskosten' },
+    { key: 'inf',  label: 'Aufbau der Ladeinfrastruktur' },
+    { key: 'wirt', label: 'Langfristige Wirtschaftlichkeit' }
+  ]},
+  sozial: { label: 'Sozial',     color: '#6a1b9a', cls: 's', items: [
+    { key: 'luft', label: 'Luftqualität und Gesundheit in Bremerhaven' },
+    { key: 'arb',  label: 'Arbeitsplätze in der Region' },
+    { key: 'geo',  label: 'Rohstoffabhängigkeit und globale Gerechtigkeit' }
+  ]}
+};
+
+var WLABELS = {
+  4: { cls: 'sel4', text: 'sehr wichtig' },
+  3: { cls: 'sel3', text: 'wichtig' },
+  2: { cls: 'sel2', text: 'weniger wichtig' },
+  1: { cls: 'sel1', text: 'gar nicht wichtig' }
+};
+
+// Draw static intro scheibe
+function drawStatic() {
+  var c = document.getElementById('introCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var cx = 80, cy = 80, r = 70;
+  ctx.clearRect(0,0,160,160);
+  // 3 equal sectors: oeko=top(270→30), oekono=right(30→150), sozial=left(150→270)
+  var sectors = [
+    { color: '#2d7d46', a1: -90, a2: 30,  label: 'Ökologisch', lx: 80, ly: 22 },
+    { color: '#1565c0', a1: 30,  a2: 150, label: 'Ökonomisch', lx: 138, ly: 110 },
+    { color: '#6a1b9a', a1: 150, a2: 270, label: 'Sozial',     lx: 22,  ly: 110 }
+  ];
+  sectors.forEach(function(s) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, s.a1*Math.PI/180, s.a2*Math.PI/180);
+    ctx.closePath();
+    ctx.fillStyle = s.color + '33';
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+  // Rings
+  [0.33, 0.66, 1].forEach(function(f) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r*f, 0, 2*Math.PI);
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+  // Outer
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, 2*Math.PI);
+  ctx.strokeStyle = '#bbb';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  // Labels
+  ctx.font = 'bold 10px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#2d7d46'; ctx.fillText('Ökologisch', 80, 18);
+  ctx.font = 'bold 9px Segoe UI, Arial';
+  ctx.fillStyle = '#1565c0'; ctx.fillText('Ökon-', 145, 102); ctx.fillText('omisch', 145, 113);
+  ctx.font = 'bold 10px Segoe UI, Arial';
+  ctx.fillStyle = '#6a1b9a'; ctx.fillText('Sozial', 15, 108);
+}
+
+function drawDynamic() {
+  var c = document.getElementById('dynCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var cx = 100, cy = 100, r = 90;
+  ctx.clearRect(0,0,200,200);
+
+  var scores = getScores();
+  var maxS = 12;
+
+  var sectors = [
+    { key: 'oeko',   color: '#2d7d46', a1: -90, a2: 30  },
+    { key: 'oekono', color: '#1565c0', a1: 30,  a2: 150 },
+    { key: 'sozial', color: '#6a1b9a', a1: 150, a2: 270 }
+  ];
+
+  // Background sectors
+  sectors.forEach(function(s) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, s.a1*Math.PI/180, s.a2*Math.PI/180);
+    ctx.closePath();
+    ctx.fillStyle = s.color + '22';
+    ctx.fill();
+  });
+
+  // Filled sectors by score
+  sectors.forEach(function(s) {
+    var frac = Math.min((scores[s.key] || 0) / maxS, 1);
+    if (frac <= 0) return;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r * frac, s.a1*Math.PI/180, s.a2*Math.PI/180);
+    ctx.closePath();
+    ctx.fillStyle = s.color + 'bb';
+    ctx.fill();
+  });
+
+  // Rings
+  [0.25, 0.5, 0.75, 1].forEach(function(f) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r*f, 0, 2*Math.PI);
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // Outer
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, 2*Math.PI);
+  ctx.strokeStyle = '#ccc';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Dividers
+  [[-90],[30],[150]].forEach(function(a) {
+    var rad = a[0]*Math.PI/180;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r*Math.cos(rad), cy + r*Math.sin(rad));
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+
+  // Labels
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 11px Segoe UI, Arial';
+  ctx.fillStyle = '#2d7d46'; ctx.fillText('Ökologisch', cx, cy - r + 14);
+  ctx.font = 'bold 9.5px Segoe UI, Arial';
+  ctx.fillStyle = '#1565c0';
+  ctx.fillText('Ökon-', cx + r*0.68, cy + r*0.50);
+  ctx.fillText('omisch', cx + r*0.68, cy + r*0.50 + 12);
+  ctx.font = 'bold 11px Segoe UI, Arial';
+  ctx.fillStyle = '#6a1b9a'; ctx.fillText('Sozial', cx - r*0.72, cy + r*0.6);
+
+  // Update bars
+  ['oeko','oekono','sozial'].forEach(function(d, i) {
+    var cls = ['o','e','s'][i];
+    var sc = scores[d] || 0;
+    var bar = document.getElementById('bar-'+cls);
+    var pts = document.getElementById('pts-'+cls);
+    if (bar) bar.style.width = Math.round(sc/maxS*100)+'%';
+    if (pts) pts.textContent = sc+'/12';
+  });
+}
+
+function getScores() {
+  var sc = { oeko: 0, oekono: 0, sozial: 0 };
+  Object.keys(DIMS).forEach(function(d) {
+    DIMS[d].items.forEach(function(it) {
+      sc[d] += (state.weights[d+'-'+it.key] || 0);
+    });
+  });
+  return sc;
+}
+
+function showDim(dim) {
+  saveSachs();
+  ['oeko','oekono','sozial'].forEach(function(d) {
+    document.getElementById('dim-'+d).style.display = d===dim ? '' : 'none';
+    var t = document.getElementById('dt-'+d);
+    t.className = 'dtab'+(d===dim?(d==='oeko'?' ao':d==='oekono'?' ae':' as'):'');
+  });
+}
+
+function saveSachs() {
+  Object.keys(DIMS).forEach(function(d) {
+    DIMS[d].items.forEach(function(it) {
+      var el = document.getElementById('s-'+d+'-'+it.key);
+      if(el) state.sachs[d+'-'+it.key] = el.value;
+    });
+  });
+}
+
+function selVN(dim, key, val) {
+  state.vn[dim+'-'+key] = val;
+  ['v','n'].forEach(function(x) {
+    var btn = document.getElementById('vn-'+dim+'-'+key+'-'+x);
+    if(btn) btn.className = 'bc'+(x==='v'&&val==='vorteil'?' sv':x==='n'&&val==='nachteil'?' sn':'');
+  });
+  updateCount(dim);
+  persistAll();
+}
+
+function updateCount(dim) {
+  var cnt = 0;
+  DIMS[dim].items.forEach(function(it) {
+    var el = document.getElementById('s-'+dim+'-'+it.key);
+    if(el && el.value.trim().length > 5 && state.vn[dim+'-'+it.key]) cnt++;
+  });
+  var dc = document.getElementById('dc-'+dim);
+  if(dc) dc.textContent = cnt+'/3';
+}
+
+function buildWGroups() {
+  saveSachs();
+  var html = '';
+  Object.keys(DIMS).forEach(function(d) {
+    var dim = DIMS[d];
+    html += '<div class="dimgroup">';
+    html += '<div class="dimgrouptitle dgt-'+dim.cls+'">'+dim.label+'</div>';
+    dim.items.forEach(function(it) {
+      var id = d+'-'+it.key;
+      var sach = state.sachs[id] || '';
+      var vn = state.vn[id] || '';
+      var w = state.weights[id] || 0;
+      html += '<div class="wblock'+(w?' w-'+w:'')+'">';
+      html += '<div class="wtitle">'+it.label+'</div>';
+      if(sach) html += '<div class="wsach '+(vn==='vorteil'?'sv2':vn==='nachteil'?'sn2':'')+'">'+(vn==='vorteil'?'✓ ':vn==='nachteil'?'✗ ':'')+sach+'</div>';
+      html += '<div class="wbtns">';
+      [4,3,2,1].forEach(function(wv) {
+        var wl = WLABELS[wv];
+        html += '<button class="wbtn'+(w===wv?' '+wl.cls:'')+'" onclick="selW(\''+id+'\','+wv+')">'+wl.text+'</button>';
+      });
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('wgroups').innerHTML = html;
+  drawDynamic();
+}
+
+function selW(id, val) {
+  state.weights[id] = val;
+  buildWGroups();
+  persistAll();
+}
+
+function goPhase2() {
+  saveSachs();
+  document.getElementById('phase1').style.display = 'none';
+  document.getElementById('phase2').style.display = '';
+  document.getElementById('ps1').className = 'pstep done';
+  document.getElementById('ps2').className = 'pstep active';
+  document.getElementById('plabel').textContent = 'Phase 2 von 2';
+  buildWGroups();
+  window.scrollTo(0,0);
+}
+
+function goPhase1() {
+  document.getElementById('phase1').style.display = '';
+  document.getElementById('phase2').style.display = 'none';
+  document.getElementById('ps1').className = 'pstep active';
+  document.getElementById('ps2').className = 'pstep';
+  document.getElementById('plabel').textContent = 'Phase 1 von 2';
+  window.scrollTo(0,0);
+}
+
+function updateWU() {
+  var txt = document.getElementById('wu-text').value;
+  var w = txt.trim()===''?0:txt.trim().split(/\s+/).length;
+  document.getElementById('wu-cnt').textContent = w+' Wörter';
+  document.getElementById('wu-save').disabled = w < 30;
+}
+
+function saveWU() {
+  var txt = document.getElementById('wu-text').value;
+  document.getElementById('wu-savedtxt').textContent = txt;
+  document.getElementById('wu-saved').style.display = '';
+  persistAll();
+}
+
+function persistAll() {
+  try {
+    // Save sachs from visible textareas
+    saveSachs();
+    // Also save WU text
+    var wu = document.getElementById('wu-text');
+    if (wu) state.wu = wu.value;
+    localStorage.setItem('akku_fossil_state', JSON.stringify(state));
+  } catch(e) {}
+}
+
+function restoreAll() {
+  try {
+    var raw = localStorage.getItem('akku_fossil_state');
+    if (!raw) return;
+    var saved = JSON.parse(raw);
+    state.vn = saved.vn || {};
+    state.sachs = saved.sachs || {};
+    state.weights = saved.weights || {};
+    state.wu = saved.wu || '';
+
+    // Restore VN buttons
+    Object.keys(state.vn).forEach(function(id) {
+      var parts = id.split('-');
+      var dim = parts[0], key = parts[1], val = state.vn[id];
+      ['v','n'].forEach(function(x) {
+        var btn = document.getElementById('vn-'+dim+'-'+key+'-'+x);
+        if(btn) btn.className = 'bc'+(x==='v'&&val==='vorteil'?' sv':x==='n'&&val==='nachteil'?' sn':'');
+      });
+    });
+
+    // Restore textarea values in phase 1
+    Object.keys(state.sachs).forEach(function(id) {
+      var el = document.getElementById('s-'+id);
+      if(el) el.value = state.sachs[id];
+    });
+
+    // Restore counts
+    ['oeko','oekono','sozial'].forEach(function(d) { updateCount(d); });
+
+    // Restore WU
+    var wuEl = document.getElementById('wu-text');
+    if (wuEl && state.wu) {
+      wuEl.value = state.wu;
+      updateWU();
+      var savedBox = document.getElementById('wu-saved');
+      var savedTxt = document.getElementById('wu-savedtxt');
+      if (savedBox && savedTxt && state.wu.trim()) {
+        savedTxt.textContent = state.wu;
+        savedBox.style.display = '';
+      }
+    }
+  } catch(e) {}
+}
+
+// Auto-save on any textarea input
+document.addEventListener('input', function(e) {
+  if (e.target.tagName === 'TEXTAREA') persistAll();
+});
+
+// Init
+window.onload = function() {
+  drawStatic();
+  restoreAll();
+};
+</script>
+</body>
+</html>
